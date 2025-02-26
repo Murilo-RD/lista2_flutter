@@ -14,6 +14,7 @@ class _TodoListItemState extends State<TodoListItem> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Container(
+        width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.black,
           borderRadius: BorderRadius.circular(10),
@@ -23,7 +24,7 @@ class _TodoListItemState extends State<TodoListItem> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
-              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(
                   width: 16,
