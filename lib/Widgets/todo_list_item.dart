@@ -23,35 +23,12 @@ class _TodoListItemState extends State<TodoListItem> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 16,
-                ),
-                Icon(
-                  Icons.crisis_alert_outlined,
-                  color: Colors.blue,
-                  size: 40,
-                ),
-                SizedBox(
-                  width: 16,
-                ),
-                Text(
-                  'Todo',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                  ),
-                ),
-                Checkbox(
-                    value: true,
-                    onChanged: null,
-                    checkColor: Colors.blue,
-
-                )
-              ],
-            )
+            CheckboxListTile(
+              secondary: Icon(Icons.crisis_alert_rounded,color: Colors.blue,size: 30,),
+              value: false,
+              title: Text("Todo",style: TextStyle(color: Colors.white,fontSize: 20),),
+              onChanged: (context) {},
+            ),
           ],
         ),
       ),

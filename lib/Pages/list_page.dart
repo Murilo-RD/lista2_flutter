@@ -97,7 +97,6 @@ class _ListPageState extends State<ListPage> {
                     shrinkWrap: true,
                     children: [
                       TodoListItem(),
-
                     ],
 
                   ),
