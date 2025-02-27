@@ -2,9 +2,9 @@
 class Todo {
 
   String _title;
-  bool _check;
+  bool _check=false;
 
-  Todo(this._title,this._check );
+  Todo(this._title);
 
   Todo.fromJson(Map<String,dynamic> json)
       : _title = json['title']??'',
@@ -13,11 +13,19 @@ class Todo {
   Map<String, dynamic> toJson() {
     return {
       'title': _title,
-      'date': _check.toString(),
+      'check': _check.toString(),
     };
   }
 
+  String get title => _title;
 
+  set title(String value) {
+    _title = value;
+  }
 
+  bool get check => _check;
 
+  set check(bool value) {
+    _check = value;
+  }
 }

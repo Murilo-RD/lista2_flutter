@@ -15,17 +15,25 @@ class ListPage extends StatefulWidget {
 
 class _ListPageState extends State<ListPage> {
   final TodoRepository todoRepository = TodoRepository();
-
+  final TextEditingController textController = TextEditingController();
   late List<Todo> todos = [];
+
+  String? erroText;
+  void addTodo(String value){
+    setState(() {
+      erroText =null;
+      value == '' ? erroText='O Titulo Esta Vazio!': todos.add(Todo(value));
+      textController.clear();
+      todoRepository.saveTodoList(todos);
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-
     todoRepository.getTodoList().then((value) {
-      setState(() {
         todos = value;
-      });
+
     });
   }
 
@@ -59,9 +67,11 @@ class _ListPageState extends State<ListPage> {
                   children: [
                     Expanded(
                       child: TextField(
+                        controller: textController,
                         style: TextStyle(color: Colors.white),
                         cursorColor: Colors.blue,
                         decoration: InputDecoration(
+                            errorText: erroText,
                             label: Text('Adicionar Aarefa'),
                             labelStyle:
                                 TextStyle(color: Colors.white, fontSize: 20),
@@ -77,7 +87,7 @@ class _ListPageState extends State<ListPage> {
                       width: 8,
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: (){addTodo(textController.text);},
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.all(18),
                         backgroundColor: Colors.blue,
@@ -95,9 +105,10 @@ class _ListPageState extends State<ListPage> {
                 Flexible(
                   child: ListView(
                     shrinkWrap: true,
-                    children: [
-                      TodoListItem(),
-                    ],
+                    children:[
+                      for(Todo todo in todos)
+                        TodoListItem(todo: todo)
+                      ],
 
                   ),
                 )
