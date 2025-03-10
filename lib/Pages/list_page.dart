@@ -19,12 +19,28 @@ class _ListPageState extends State<ListPage> {
   late List<Todo> todos = [];
 
   String? erroText;
+
+  void deleteItem(Todo item){
+    setState(() {
+      todos.remove(item);
+      saveData();
+    });
+  }
+
+
+  void saveData(){
+    setState(() {
+      todoRepository.saveTodoList(todos);
+      print("ok");
+    });
+  }
+
   void addTodo(String value){
     setState(() {
       erroText =null;
       value == '' ? erroText='O Titulo Esta Vazio!': todos.add(Todo(value));
       textController.clear();
-      todoRepository.saveTodoList(todos);
+      saveData();
     });
   }
 
@@ -107,9 +123,8 @@ class _ListPageState extends State<ListPage> {
                     shrinkWrap: true,
                     children:[
                       for(Todo todo in todos)
-                        TodoListItem(todo: todo)
+                        TodoListItem(todo: todo, save: saveData,delete: deleteItem,)
                       ],
-
                   ),
                 )
               ],
