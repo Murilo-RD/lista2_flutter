@@ -19,26 +19,60 @@ class _ListPageState extends State<ListPage> {
   late List<Todo> todos = [];
 
   String? erroText;
+  late Todo _lastDelete;
+  late int _lastDeletePos;
 
-  void deleteItem(Todo item){
+  Future<void> _onRefresh() async{
+  await Future.delayed(Duration(seconds: 1));
+  setState(() {
+    todos.sort((a,b){
+      if(a.check && !b.check) return 1;
+      else if(!a.check && b.check) return -1;
+      else return 0;
+    });
+    saveData();
+  });
+
+  }
+
+  void deleteItem(Todo item) {
     setState(() {
+      _lastDeletePos = todos.indexOf(item);
+      _lastDelete = item;
       todos.remove(item);
       saveData();
+
+      ScaffoldMessenger.of(context).clearSnackBars();
+
+      final snackBar = SnackBar(
+        content: Text('Tarefa (${_lastDelete.title}) Removida!!'),
+        action: SnackBarAction(
+          label: 'Desfazer',
+          textColor: Colors.blue,
+          onPressed: () {
+            setState(() {
+              todos.insert(_lastDeletePos, _lastDelete);
+              saveData();
+            });
+          },
+        ),
+        duration: Duration(seconds: 3),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     });
   }
 
-
-  void saveData(){
+  void saveData() {
     setState(() {
       todoRepository.saveTodoList(todos);
       print("ok");
     });
   }
 
-  void addTodo(String value){
+  void addTodo(String value) {
     setState(() {
-      erroText =null;
-      value == '' ? erroText='O Titulo Esta Vazio!': todos.add(Todo(value));
+      erroText = null;
+      value == '' ? erroText = 'O Titulo Esta Vazio!' : todos.add(Todo(value));
       textController.clear();
       saveData();
     });
@@ -48,8 +82,9 @@ class _ListPageState extends State<ListPage> {
   void initState() {
     super.initState();
     todoRepository.getTodoList().then((value) {
+      setState(() {
         todos = value;
-
+      });
     });
   }
 
@@ -103,7 +138,9 @@ class _ListPageState extends State<ListPage> {
                       width: 8,
                     ),
                     ElevatedButton(
-                      onPressed: (){addTodo(textController.text);},
+                      onPressed: () {
+                        addTodo(textController.text);
+                      },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.all(18),
                         backgroundColor: Colors.blue,
@@ -119,12 +156,19 @@ class _ListPageState extends State<ListPage> {
                   ],
                 ),
                 Flexible(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children:[
-                      for(Todo todo in todos)
-                        TodoListItem(todo: todo, save: saveData,delete: deleteItem,)
+                  child: RefreshIndicator(
+                    onRefresh: _onRefresh,
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        for (Todo todo in todos)
+                          TodoListItem(
+                            todo: todo,
+                            save: saveData,
+                            delete: deleteItem,
+                          )
                       ],
+                    ),
                   ),
                 )
               ],
