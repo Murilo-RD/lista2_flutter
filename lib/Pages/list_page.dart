@@ -121,6 +121,7 @@ class _ListPageState extends State<ListPage> {
                         controller: textController,
                         style: TextStyle(color: Colors.white),
                         cursorColor: Colors.blue,
+                        onSubmitted: addTodo,
                         decoration: InputDecoration(
                             errorText: erroText,
                             label: Text('Adicionar Aarefa'),
